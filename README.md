@@ -66,7 +66,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'javamuc:gradle-semantic-build-versioning:4.0.0'
+        classpath 'javamuc:gradle-semantic-build-versioning:4.1.0'
     }
 }
 
