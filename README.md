@@ -59,7 +59,7 @@ $ ./gradlew publishToLocalMaven
 buildscript {
     repositories {
         maven {
-            url uri('/path/to/.m2/repository/')
+            url uri(System.getProperty("user.home")+'/.m2/repository/')
         }
         maven {
             url 'https://plugins.gradle.org/m2/'
