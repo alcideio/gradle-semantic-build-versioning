@@ -1,12 +1,16 @@
 # Semantic build-versioning for Gradle
 
-[![Circle CI](https://circleci.com/gh/vivin/gradle-semantic-build-versioning.svg?style=svg&circle-token=10ad77d88ed4766073cca457059f28a62a8dd41b)](https://circleci.com/gh/vivin/gradle-semantic-build-versioning) [![JaCoCo](http://circle-jacoco-badge.herokuapp.com/line?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551)](http://circle-jacoco-badge.herokuapp.com/report?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551) [![JaCoCo](http://circle-jacoco-badge.herokuapp.com/branch?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551)](http://circle-jacoco-badge.herokuapp.com/report?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551) [![JaCoCo](http://circle-jacoco-badge.herokuapp.com/complexity?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551)](http://circle-jacoco-badge.herokuapp.com/report?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551)
+
+<!-- [![Circle CI](https://circleci.com/gh/vivin/gradle-semantic-build-versioning.svg?style=svg&circle-token=10ad77d88ed4766073cca457059f28a62a8dd41b)](https://circleci.com/gh/vivin/gradle-semantic-build-versioning) [![JaCoCo](http://circle-jacoco-badge.herokuapp.com/line?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551)](http://circle-jacoco-badge.herokuapp.com/report?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551) [![JaCoCo](http://circle-jacoco-badge.herokuapp.com/branch?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551)](http://circle-jacoco-badge.herokuapp.com/report?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551) [![JaCoCo](http://circle-jacoco-badge.herokuapp.com/complexity?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551)](http://circle-jacoco-badge.herokuapp.com/report?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551) -->
+
+This project is a fork of the [Semantic versioning for Gradle plugin by vivin](https://github.com/vivin/gradle-semantic-build-versioning). This version of the plugin adds the option to tag the same commit several times with a new version.
 
   * [Introduction](#introduction)
   * [Usage](#usage)
   * [Project properties](#project-properties)
     * [`bumpComponent`](#bumpcomponent)
     * [`forceBump`](#forcebump)
+    * [`forceVersion`](#forceVersion)
     * [`newPreRelease`](#newprerelease)
     * [`promoteToRelease`](#promotetorelease)
     * [`release`](#release)
@@ -42,22 +46,31 @@ As this is a settings plugin, it is applied to `settings.gradle` and  so version
 
 # Usage
 
-The latest version of this plugin is **4.0.0**. Using the plugin is quite simple:
+Clone this repository and publish it in your local maven repository:
+
+```bash
+$ git clone https://github.com/javamuc/gradle-semantic-build-versioning.git
+$ cd  gradle-semantic-build-versioning
+$ ./gradlew publishToLocalMaven
+```
 
 **In settings.gradle**
 ```gradle
 buildscript {
     repositories {
         maven {
+            url uri('/path/to/.m2/repository/')
+        }
+        maven {
             url 'https://plugins.gradle.org/m2/'
         }
     }
     dependencies {
-        classpath 'gradle.plugin.net.vivin:gradle-semantic-build-versioning:4.0.0'
+        classpath 'javamuc:gradle-semantic-build-versioning:4.0.0'
     }
 }
 
-apply plugin: 'net.vivin.gradle-semantic-build-versioning'
+apply plugin: 'javamuc.gradle-semantic-build-versioning'
 ```
 
 Additionally you need an (at least) empty `semantic-build-versioning.gradle` file in the corresponding project-directory of each project in the build that should be handled by this plugin. This file allows you to set options to configure the plugin's behavior (see [Options and use-cases](#options-and-use-cases)). If you do not want to version your sub-projects separately from the main project, and instead want to keep their versions in sync with the parent project, you can simply add `semantic-build-versioning.gradle` only under the root project and do something like the following in the root project's `build.gradle`:
@@ -69,7 +82,7 @@ subprojects {
 
 This is usually enough to start using the plugin. Assuming that you already have tags that are (or contain) semantic versions, the plugin will search for all nearest ancestor-tags, select the latest<sup>1</sup> of them as the base version, and increment the component with the least precedence. The nearest ancestor-tags are those tags with a path between them and the `HEAD` commit, without any intervening tags. This is the default behavior of the plugin.
 
-If you need the `TagTask` class in your Gradle build script, for example, for a construct like `tasks.withType(TagTask) { it.dependsOn publish }`, or when you want to define additional tag tasks, you can add the plugin's classes to the build script classpath by simply doing `plugins { id 'net.vivin.gradle-semantic-build-versioning' version '3.0.4' apply false }`.
+If you need the `TagTask` class in your Gradle build script, for example, for a construct like `tasks.withType(TagTask) { it.dependsOn publish }`, or when you want to define additional tag tasks, you can add the plugin's classes to the build script classpath by simply doing `plugins { id 'javamuc.gradle-semantic-build-versioning' version '3.0.4' apply false }`.
 
 <sup>1</sup> Latest based on ordering-rules defined in the semantic-version specification, **not latest by date**.
 
@@ -108,6 +121,10 @@ If you use autobumping (see [Automatic bumping based on commit messages](#automa
   - If you are attempting to manually bump a component with higher-precedence than the one autobump is attempting to bump, the manual bump wins.
   - If you are attempting to manually bump a component with lesser-precedence than the one autobump is attempting to bump, and the `forceBump` property is **not** set, the build fails.
   - If you are attempting to manually bump a component with lesser-precedence than the one autobump is attempting to bump, and the `forceBump` property is set, the manual bump wins. Note that this means that you are **intentionally disregarding** your commit messages (i.e., "I know what I'm doing; my commit messages were wrong").
+
+## `forceVersion`
+
+This property allows to tag the same commit with several versions.
 
 ## `newPreRelease`
 
