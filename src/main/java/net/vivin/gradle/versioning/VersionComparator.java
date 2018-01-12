@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class VersionComparator implements Comparator<String> {
-    private static final Pattern VERSION_AT_START_PATTERN = Pattern.compile("^(\\d++\\.\\d++\\.\\d++)");
+    private static final Pattern VERSION_AT_START_PATTERN = Pattern.compile("(\\d++\\.\\d++\\.\\d++)");
     private static final Pattern PRE_RELEASE_PART_PATTERN = Pattern.compile("(?<=^\\d+\\.\\d+\\.\\d+)-(?<preReleasePart>.*)$");
     private static final Pattern NUMERIC_COMPONENT_PATTERN = Pattern.compile("\\d++");
 

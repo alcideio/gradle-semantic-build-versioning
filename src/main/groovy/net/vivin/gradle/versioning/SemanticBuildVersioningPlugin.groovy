@@ -25,6 +25,7 @@ class SemanticBuildVersioningPlugin implements Plugin<Settings> {
             semanticBuildVersion.newPreRelease = project.hasProperty('newPreRelease')
             semanticBuildVersion.promoteToRelease = project.hasProperty('promoteToRelease')
             semanticBuildVersion.forceBump = project.hasProperty('forceBump')
+            semanticBuildVersion.forceVersion = project.hasProperty('forceVersion')
 
             if(project.hasProperty('bumpComponent')) {
                 semanticBuildVersion.bump = VersionComponent."${project.bumpComponent.toUpperCase().replace '-', '_'}"

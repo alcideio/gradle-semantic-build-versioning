@@ -109,12 +109,16 @@ class VersionUtils {
 
                 result = versionFromTags
             } else {
-//                if(version.bump || version.newPreRelease || version.promoteToRelease) {
-//                    throw new BuildException('Cannot bump the version, create a new pre-release version, or promote a pre-release version because HEAD is currently pointing to a tag that identifies an existing version. To be able to create a new version, you must make changes', null)
-//                }
+                if(!version.forceVersion && (version.bump || version.newPreRelease || version.promoteToRelease)) {
+                    throw new BuildException('Cannot bump the version, create a new pre-release version, or promote a pre-release version because HEAD is currently pointing to a tag that identifies an existing version. To be able to create a new version, you must make changes, or use the forceVersion property', null)
+                }
 
                 version.snapshot = false
-                return headTag - TAG_PREFIX_PATTERN
+                def s = headTag - TAG_PREFIX_PATTERN
+                if(version.forceVersion) {
+                    s = incrementVersion(s)
+                }
+                return s
             }
         }
 

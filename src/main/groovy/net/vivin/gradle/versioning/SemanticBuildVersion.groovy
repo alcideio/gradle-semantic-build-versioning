@@ -15,6 +15,8 @@ class SemanticBuildVersion {
     VersionComponent bump = null
 
     boolean forceBump = false
+    
+    boolean forceVersion = false
 
     boolean promoteToRelease = false
 
