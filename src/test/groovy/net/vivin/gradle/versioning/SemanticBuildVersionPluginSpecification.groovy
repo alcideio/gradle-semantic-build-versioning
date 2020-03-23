@@ -190,7 +190,7 @@ class SemanticBuildVersionPluginSpecification extends Specification {
         def buildResult = gradleRunner.withArguments(snapshot ? [] : ['-P', 'release']).build()
 
         then:
-        (buildResult.output =~ /^major: 1\r?\n/).find()
+        (buildResult.output =~ /major: 1\r?\n/).find()
         (buildResult.output =~ /\r?\nminor: 2\r?\n/).find()
         (buildResult.output =~ /\r?\npatch: 3\r?\n/).find()
         (buildResult.output =~ /\r?\npreRelease: pre\.4\r?\n/).find()

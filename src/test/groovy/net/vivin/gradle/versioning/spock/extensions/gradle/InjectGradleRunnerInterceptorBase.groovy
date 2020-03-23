@@ -64,7 +64,7 @@ abstract class InjectGradleRunnerInterceptorBase implements IMethodInterceptor {
                 }
             }
 
-            apply plugin: 'net.vivin.gradle-semantic-build-versioning'
+            apply plugin: 'javamuc.gradle-semantic-build-versioning'
         """.stripIndent()
 
         new File(projectDir, 'gradle.properties').text = """

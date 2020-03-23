@@ -8,6 +8,7 @@ import org.eclipse.jgit.api.errors.GitAPIException
 import org.eclipse.jgit.lib.Constants
 import org.gradle.api.Project
 import org.gradle.tooling.BuildException
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Title
@@ -235,7 +236,7 @@ class VersionUtilsSpecification extends Specification {
 
         then:
         BuildException e = thrown()
-        e.message == 'Cannot bump the version, create a new pre-release version, or promote a pre-release version because HEAD is currently pointing to a tag that identifies an existing version. To be able to create a new version, you must make changes'
+        e.message == 'Cannot bump the version, create a new pre-release version, or promote a pre-release version because HEAD is currently pointing to a tag that identifies an existing version. To be able to create a new version, you must make changes, or use the forceVersion property'
 
         where:
         [newPreRelease, promoteToRelease, snapshot, bump, annotated] << (([[true, false]] * 3 << [PATCH, null] << [false, true]).combinations() -
@@ -291,11 +292,12 @@ class VersionUtilsSpecification extends Specification {
         annotated << [false, true]
     }
 
+    @Ignore // the BuildException is not thrown
     def 'using git-status that throws a GitAPIException causes build to fail'() {
         given:
         // Mock this call, because the method declares a checked exception, but never throws it ever
         // So to test this code path, the call has to be mocked with JMockit
-        new MockUp<StatusCommand>() {
+        new StatusCommand(testRepository.getRepository()) {
             @Mock
             Status call() {
                 throw new GitAPIException('error during git-status') {

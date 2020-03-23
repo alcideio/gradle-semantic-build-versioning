@@ -3,7 +3,8 @@
 
 <!-- [![Circle CI](https://circleci.com/gh/vivin/gradle-semantic-build-versioning.svg?style=svg&circle-token=10ad77d88ed4766073cca457059f28a62a8dd41b)](https://circleci.com/gh/vivin/gradle-semantic-build-versioning) [![JaCoCo](http://circle-jacoco-badge.herokuapp.com/line?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551)](http://circle-jacoco-badge.herokuapp.com/report?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551) [![JaCoCo](http://circle-jacoco-badge.herokuapp.com/branch?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551)](http://circle-jacoco-badge.herokuapp.com/report?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551) [![JaCoCo](http://circle-jacoco-badge.herokuapp.com/complexity?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551)](http://circle-jacoco-badge.herokuapp.com/report?author=vivin&project=gradle-semantic-build-versioning&circle-token=3e948328990f7e4cc9e519915518ab325d299551) -->
 
-This project is a fork of the [Semantic versioning for Gradle plugin by vivin](https://github.com/vivin/gradle-semantic-build-versioning). This version of the plugin adds the option to tag the same commit several times with a new version.
+This project is a fork of the [Semantic versioning for Gradle plugin by vivin](https://github.com/vivin/gradle-semantic-build-versioning). This version of the plugin adds the option to tag the same commit several times with a new version
+ (fork of https://github.com/javamuc/gradle-semantic-build-versioning). This version has updated dependencies, in particular org.eclipse.jgit, which resolves some issues with incorrect detection of uncommitted changes affecting tagging.
 
   * [Introduction](#introduction)
   * [Usage](#usage)
@@ -49,7 +50,7 @@ As this is a settings plugin, it is applied to `settings.gradle` and  so version
 Clone this repository and publish it in your local maven repository:
 
 ```bash
-$ git clone https://github.com/javamuc/gradle-semantic-build-versioning.git
+$ git clone https://github.com/alcideio/gradle-semantic-build-versioning.git
 $ cd  gradle-semantic-build-versioning
 $ ./gradlew publishToLocalMaven
 ```

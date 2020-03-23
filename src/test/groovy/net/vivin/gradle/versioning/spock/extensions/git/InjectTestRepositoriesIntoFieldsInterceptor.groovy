@@ -51,7 +51,15 @@ class InjectTestRepositoriesIntoFieldsInterceptor implements IMethodInterceptor 
             fieldsToFill.each {
                 it.writeValue instance, null
             }
-            repositoryTestCase.tearDown()
+            try {
+                repositoryTestCase.tearDown()
+            } catch (AssertionError e) {
+                if (e.getMessage().contains("Failed to delete")) {
+                    System.err.println("repository teardown: " + e)
+                } else {
+                    throw e;
+                }
+            }
         }
     }
 }
