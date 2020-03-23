@@ -1,5 +1,15 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'javamuc:gradle-semantic-build-versioning:4.2.0-SNAPSHOT'
+    }
+}
 plugins {
-    id 'javamuc.gradle-semantic-build-versioning' version "4.1.1"
     id "com.gradle.enterprise" version "3.1.1"
 }
 

@@ -52,7 +52,7 @@ Clone this repository and publish it in your local maven repository:
 ```bash
 $ git clone https://github.com/alcideio/gradle-semantic-build-versioning.git
 $ cd  gradle-semantic-build-versioning
-$ ./gradlew publishToLocalMaven
+$ ./gradlew publishToMavenLocal
 ```
 
 **In settings.gradle**
