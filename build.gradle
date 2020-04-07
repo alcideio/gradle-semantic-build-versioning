@@ -1,7 +1,7 @@
 import net.vivin.gradle.versioning.tasks.TagTask
 
 plugins {
-    id 'com.gradle.plugin-publish' version '0.10.1'
+    id 'com.gradle.plugin-publish' version '0.11.0'
 	id 'io.alcide.gradle-semantic-build-versioning' apply false
     id 'groovy'
     id 'maven-publish'
