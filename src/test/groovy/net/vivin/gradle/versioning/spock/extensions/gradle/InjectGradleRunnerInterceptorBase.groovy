@@ -64,7 +64,7 @@ abstract class InjectGradleRunnerInterceptorBase implements IMethodInterceptor {
                 }
             }
 
-            apply plugin: 'alcideio.gradle-semantic-build-versioning'
+            apply plugin: 'io.alcide.gradle-semantic-build-versioning'
         """.stripIndent()
 
         new File(projectDir, 'gradle.properties').text = """

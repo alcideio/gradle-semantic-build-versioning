@@ -65,11 +65,11 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'alcideio:gradle-semantic-build-versioning:4.2.0'
+        classpath 'io.alcide:gradle-semantic-build-versioning:4.2.1'
     }
 }
 
-apply plugin: 'alcideio.gradle-semantic-build-versioning'
+apply plugin: 'io.alcide.gradle-semantic-build-versioning'
 ```
 
 Additionally you need an (at least) empty `semantic-build-versioning.gradle` file in the corresponding project-directory of each project in the build that should be handled by this plugin. This file allows you to set options to configure the plugin's behavior (see [Options and use-cases](#options-and-use-cases)). If you do not want to version your sub-projects separately from the main project, and instead want to keep their versions in sync with the parent project, you can simply add `semantic-build-versioning.gradle` only under the root project and do something like the following in the root project's `build.gradle`:
@@ -81,7 +81,7 @@ subprojects {
 
 This is usually enough to start using the plugin. Assuming that you already have tags that are (or contain) semantic versions, the plugin will search for all nearest ancestor-tags, select the latest<sup>1</sup> of them as the base version, and increment the component with the least precedence. The nearest ancestor-tags are those tags with a path between them and the `HEAD` commit, without any intervening tags. This is the default behavior of the plugin.
 
-If you need the `TagTask` class in your Gradle build script, for example, for a construct like `tasks.withType(TagTask) { it.dependsOn publish }`, or when you want to define additional tag tasks, you can add the plugin's classes to the build script classpath by simply doing `plugins { id 'alcideio.gradle-semantic-build-versioning' version '4.2.0' apply false }`.
+If you need the `TagTask` class in your Gradle build script, for example, for a construct like `tasks.withType(TagTask) { it.dependsOn publish }`, or when you want to define additional tag tasks, you can add the plugin's classes to the build script classpath by simply doing `plugins { id 'io.alcide.gradle-semantic-build-versioning' version '4.2.1' apply false }`.
 
 <sup>1</sup> Latest based on ordering-rules defined in the semantic-version specification, **not latest by date**.
 

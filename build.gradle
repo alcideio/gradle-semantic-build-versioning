@@ -2,7 +2,7 @@ import net.vivin.gradle.versioning.tasks.TagTask
 
 plugins {
     id 'com.gradle.plugin-publish' version '0.10.1'
-	id 'alcideio.gradle-semantic-build-versioning' apply false
+	id 'io.alcide.gradle-semantic-build-versioning' apply false
     id 'groovy'
     id 'maven-publish'
     id 'jacoco'
@@ -10,7 +10,7 @@ plugins {
 }
 
 
-group 'alcideio'
+group 'io.alcide'
 
 tasks.withType(TagTask) {
     it.dependsOn publishPlugins
@@ -99,7 +99,7 @@ test {
 gradlePlugin {
     plugins {
         semanticBuildVersioningPlugin {
-            id = 'alcideio.gradle-semantic-build-versioning'
+            id = 'io.alcide.gradle-semantic-build-versioning'
             implementationClass = 'net.vivin.gradle.versioning.SemanticBuildVersioningPlugin'
         }
     }
@@ -113,7 +113,7 @@ pluginBundle {
 
     plugins {
         semanticBuildVersioningPlugin {
-            id = 'alcideio.gradle-semantic-build-versioning'
+            id = 'io.alcide.gradle-semantic-build-versioning'
             displayName = 'Gradle Semantic Build Versioning Plugin'
         }
     }
