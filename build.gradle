@@ -1,7 +1,7 @@
 import net.vivin.gradle.versioning.tasks.TagTask
 
 plugins {
-    id 'com.gradle.plugin-publish' version '0.11.0'
+    id 'com.gradle.plugin-publish' version '0.14.0'
 	id 'io.alcide.gradle-semantic-build-versioning' apply false
     id 'groovy'
     id 'maven-publish'
@@ -52,15 +52,15 @@ task createJacocoAgentClasspathFile {
 }
 
 dependencies {
-	compile 'org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r'
+	compile 'org.eclipse.jgit:org.eclipse.jgit:5.11.0.202103091610-r'
 
-    testCompile 'org.eclipse.jgit:org.eclipse.jgit.junit:5.7.0.202003110725-r'
+    testCompile 'org.eclipse.jgit:org.eclipse.jgit.junit:5.11.0.202103091610-r'
     testCompile 'org.jmockit:jmockit:1.49'
     testCompile('org.spockframework:spock-core:1.3-groovy-2.5') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
     testRuntime 'cglib:cglib-nodep:3.3.0'
-    testRuntime 'org.objenesis:objenesis:3.1'
+    testRuntime 'org.objenesis:objenesis:3.2'
 
     jacocoRuntime "org.jacoco:org.jacoco.agent:$jacoco.toolVersion:runtime"
 
@@ -117,4 +117,8 @@ pluginBundle {
             displayName = 'Gradle Semantic Build Versioning Plugin'
         }
     }
+}
+
+wrapper {
+    gradleVersion = '6.8.3'
 }

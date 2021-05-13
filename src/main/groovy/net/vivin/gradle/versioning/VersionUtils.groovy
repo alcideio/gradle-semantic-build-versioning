@@ -11,8 +11,6 @@ import org.gradle.tooling.BuildException
 
 import java.util.regex.Pattern
 
-import static java.util.Collections.reverseOrder
-
 /**
  * Created on 1/11/17 at 2:43 PM
  * @author vivin
@@ -216,13 +214,10 @@ class VersionUtils {
         try {
             def commit = repository.resolve(revstr)
 
-            return repository.tags
-                .findAll { name, ref -> tags?.contains name }
-                .collectEntries { [it.key, repository.resolve("$it.value.name^{commit}")] }
-                .findAll { it.value == commit }
-                .collect { it.key }
-                .toSorted(reverseOrder(new VersionComparator()))
-                .find()
+            def versionComparator = new VersionComparator()
+            return tags.findAll {repository.resolve("$it^{commit}") == commit }
+                    .inject(null) { acc, val -> (acc && versionComparator.compare((String) acc, val) > 0) ? acc : val}
+
         } catch(IOException e) {
             throw new BuildException("Unexpected error while determining tag: ${e.message}", e)
         }
@@ -272,34 +267,46 @@ class VersionUtils {
             return
         }
 
-        tags = filterTags(repository.tags.keySet())
-        versionByTag = tags.collectEntries { [it, it - TAG_PREFIX_PATTERN] }
-
         try {
-            def revWalk = new RevWalk(repository)
-
-            def nearestAncestorTags = []
-            def references = [] as Stack<RevCommit>
-            def investigatedReferences = [] as Set<RevCommit>
+            tags = filterTags(repository.getRefDatabase().getRefsByPrefix(Constants.R_TAGS)
+                    .collect { it.name.substring(Constants.R_TAGS.length()) })
+            versionByTag = tags.collectEntries { [it, it - TAG_PREFIX_PATTERN] }
+            // While we are going through the commits, we will also collect the messages if autobump is enabled
+            autobumpMessages = version.config.autobump.enabled ? [] : null
 
             def headCommit = repository.resolve(Constants.HEAD)
             if(!headCommit) {
                 return // If there is no HEAD, we are done
             }
 
-            // While we are going through the commits, we will also collect the messages if autobump is enabled
-            autobumpMessages = version.config.autobump.enabled ? [] : null
+            def revWalk = new RevWalk(repository)
+
+            def nearestAncestorTags = []
+            def references = [] as Stack<RevCommit>
+            def investigatedReferences = [] as Set<RevCommit>
 
             // This is a depth-first traversal; references is the frontier set (stack)
             references.add(revWalk.parseCommit(headCommit))
 
+            def versionComparator = new VersionComparator()
+            def latestTag = tags.
+                    inject(null) { acc, val -> (acc && versionComparator.compare((String)acc, (String)val) > 0) ? acc : val}
+
             while(references) {
                 RevCommit reference = references.pop()
+                if (investigatedReferences.contains(reference)) {
+                    // skip parents added multiple times before being investigated for the first time
+                    continue
+                }
                 investigatedReferences << reference
 
                 String tag = getLatestTagOnReference(reference.name)
-                if(tags.contains(tag)) {
+                if (tags.contains(tag)) {
                     nearestAncestorTags << tag
+                    if (tag == latestTag && autobumpMessages == null) {
+                        // latest known tag found on a parent & no autobump - no need to search further
+                        break;
+                    }
                 } else {
                     RevCommit commit = revWalk.parseCommit(reference.id)
                     if(autobumpMessages != null) {
@@ -311,10 +318,9 @@ class VersionUtils {
             }
 
             latestVersion = nearestAncestorTags
-                .unique()
-                .collect { versionByTag."$it" }
-                .toSorted(reverseOrder(new VersionComparator()))
-                .find()
+                    .unique()
+                    .collect { versionByTag."$it" }
+                    .inject(null) { acc, val -> (acc && versionComparator.compare((String)acc, (String)val) > 0) ? acc : val}
 
         } catch(IOException e) {
             throw new BuildException("Unexpected error while parsing HEAD commit: $e.message", e)

@@ -130,6 +130,7 @@ class TestRepository {
         return new Git(repository)
             .describe()
             .setTarget(repository.resolve(Constants.HEAD))
+            .setTags(true)
             .call()
     }
 
